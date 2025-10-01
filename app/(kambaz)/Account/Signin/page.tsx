@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Signin() {
   return (
-    <div id="wd-signin-screen" className="container mt-5" >
+    <div id="wd-signin-screen" className="container mt-5" style={{ maxWidth: "400px" }}>
       <h1 className="mb-4">Signin</h1>
       
       <input

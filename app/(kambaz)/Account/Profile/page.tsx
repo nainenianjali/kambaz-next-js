@@ -4,7 +4,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 
 export default function Profile() {
   return (
-    <div id="wd-profile-screen" className="container mt-5" >
+    <div id="wd-profile-screen" className="container mt-5" style={{ maxWidth: "500px" }} >
       <h2 className="mb-4">Profile</h2>
       
       <div className="mb-3">
