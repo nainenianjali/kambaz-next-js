@@ -5,9 +5,27 @@ import * as db from "../../../../Database";
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 
+// Define interfaces for type safety
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  loginId: string;
+  section: string;
+  role: string;
+  lastActivity: string;
+  totalActivity: string;
+}
+
+interface Enrollment {
+  user: string;
+  course: string;
+}
+
 export default function PeopleTable() {
   const { cid } = useParams();
-  const { users, enrollments } = db;
+  const users = db.users as User[];
+  const enrollments = db.enrollments as Enrollment[];
   
   return (
     <div id="wd-people-table">
@@ -24,12 +42,12 @@ export default function PeopleTable() {
         </thead>
         <tbody>
           {users
-            .filter((usr) =>
-              enrollments.some((enrollment) => 
+            .filter((usr: User) =>
+              enrollments.some((enrollment: Enrollment) => 
                 enrollment.user === usr._id && enrollment.course === cid
               )
             )
-            .map((user: any) => (
+            .map((user: User) => (
               <tr key={user._id}>
                 <td className="wd-full-name text-nowrap">
                   <FaUserCircle className="me-2 fs-1 text-secondary" />
