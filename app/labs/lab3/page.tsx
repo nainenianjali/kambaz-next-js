@@ -21,7 +21,7 @@ import House from "./House";
 import Spreading from "./Spreader";
 import Destructing from "./Destructing";
 import FunctionDestructing from "./FunctionDestructing";
-import Math from "./Math";
+//import Math from "./Math";
 import DestructingImports from "./DestructingImports";
 import Classes from "./Classes";
 import Styles from "./Styles";
@@ -31,9 +31,11 @@ import Highlight from "./Highlight";
 import AddPathParameters from "./add/[a]/[b]/page";
 import PathParameters from "./PathParameters";
 import TodoItem from "./todos/TodoItem";
+import TodoList from "./todos/TodoList";
 
 
 export default function Lab3() {
+    console.log('Hello World!');
   return (
     <div>
       <h2>Lab 3</h2>
@@ -74,5 +76,6 @@ export default function Lab3() {
      <AddPathParameters/>
      <PathParameters/>
      <TodoItem/>
+     <TodoList/>
     </div>
 );}

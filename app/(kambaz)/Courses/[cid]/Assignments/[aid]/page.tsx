@@ -1,6 +1,17 @@
+"use client";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import * as db from "../../../../Database";
 import { FaCalendarAlt } from "react-icons/fa";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find((a: any) => a._id === aid);
+
+  if (!assignment) {
+    return <div>Assignment not found</div>;
+  }
+
   return (
     <div id="wd-assignments-editor" className="container mt-4">
       <div className="mb-3">
@@ -8,7 +19,7 @@ export default function AssignmentEditor() {
         <input 
           id="wd-name" 
           className="form-control"
-          defaultValue="A1" 
+          defaultValue={assignment.title} 
         />
       </div>
 
@@ -17,16 +28,16 @@ export default function AssignmentEditor() {
           id="wd-description" 
           className="form-control"
           rows={10}
-          defaultValue={`The assignment is available online
+          defaultValue={assignment.description || `The assignment is available online
 
 Submit a link to the landing page of your Web application running on Netlify.
 
 The landing page should include the following:
 
-• Your full name and section
-• Links to each of the lab assignments  
-• Link to the Kanbas application
-• Links to all relevant source code repositories
+- Your full name and section
+- Links to each of the lab assignments  
+- Link to the Kanbas application
+- Links to all relevant source code repositories
 
 The Kanbas application should include a link to navigate back to the landing page.`}
         />
@@ -38,7 +49,7 @@ The Kanbas application should include a link to navigate back to the landing pag
           <input 
             id="wd-points" 
             className="form-control"
-            defaultValue={100} 
+            defaultValue={assignment.points} 
           />
         </div>
       </div>
@@ -125,7 +136,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                   type="text" 
                   id="wd-due-date" 
                   className="form-control"
-                  defaultValue="May 13, 2024, 11:59 PM" 
+                  defaultValue={assignment.due} 
                 />
                 <span className="input-group-text">
                   <FaCalendarAlt />
@@ -141,7 +152,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                     type="text" 
                     id="wd-available-from" 
                     className="form-control"
-                    defaultValue="May 6, 2024, 12:00 AM" 
+                    defaultValue={assignment.availableFrom} 
                   />
                   <span className="input-group-text">
                     <FaCalendarAlt />
@@ -156,7 +167,7 @@ The Kanbas application should include a link to navigate back to the landing pag
                     type="text" 
                     id="wd-available-until" 
                     className="form-control"
-                    defaultValue="" 
+                    defaultValue={assignment.availableUntil || ""} 
                   />
                   <span className="input-group-text">
                     <FaCalendarAlt />
@@ -171,8 +182,12 @@ The Kanbas application should include a link to navigate back to the landing pag
       <hr />
       
       <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary me-2">Cancel</button>
-        <button className="btn btn-danger">Save</button>
+        <Link href={`/Courses/${cid}/Assignments`} className="btn btn-secondary me-2">
+          Cancel
+        </Link>
+        <Link href={`/Courses/${cid}/Assignments`} className="btn btn-danger">
+          Save
+        </Link>
       </div>
     </div>
   );

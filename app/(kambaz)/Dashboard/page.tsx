@@ -1,160 +1,38 @@
 import Link from "next/link";
-
+import * as db from "../Database";
 import { Row, Col, Card, CardImg, CardBody, CardTitle, CardText, Button } from 'react-bootstrap';
+
 export default function Dashboard() {
+  const courses = db.courses;
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> 
       <hr />
-      <h2 id="wd-dashboard-published">Published Courses (12)</h2> 
+      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> 
       <hr />
       <div id="wd-dashboard-courses">
-        <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/reactjs.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 React JS
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/nextjs.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 Next JS
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/c++.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 C++
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/java.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 Java
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/python.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 Python
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/Bootstrap_logo.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 Bootstrap
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/javascript.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 JavaScript
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
-
-          <Col className="wd-dashboard-course" style={{ width: "270px" }}>
-            <Card>
-              <Link href="/Courses/1234/Home"
-                    className="wd-dashboard-course-link text-decoration-none text-dark">
-                <CardImg variant="top" src="/images/html.jpg" height={160}/>
-                <CardBody>
-                  <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                    CS1234 HTML
-                  </CardTitle>
-                  <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Full Stack software developer
-                  </CardText>
-                  <Button variant="primary">Go</Button>
-                </CardBody>
-              </Link>
-            </Card>
-          </Col>
+        <Row xs={1} md={5} className="g-4">
+          {courses.map((course) => (
+            <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
+              <Card>
+                <Link href={`/Courses/${course._id}/Home`}
+                      className="wd-dashboard-course-link text-decoration-none text-dark">
+                  <CardImg src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
+                  <CardBody className="card-body">
+                    <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                      {course.name}
+                    </CardTitle>
+                    <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
+                      {course.description}
+                    </CardText>
+                    <Button variant="primary">Go</Button>
+                  </CardBody>
+                </Link>
+              </Card>
+            </Col>
+          ))}
         </Row>
       </div>
     </div>
-);}
-
+  );
+}

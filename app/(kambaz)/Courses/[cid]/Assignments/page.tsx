@@ -1,10 +1,16 @@
+"use client";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import * as db from "../../../Database";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { MdEditNote } from "react-icons/md";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+
   return (
     <div id="wd-assignments" className="p-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -46,59 +52,31 @@ export default function Assignments() {
         </div>
 
         <ul className="list-group list-group-flush" id="wd-assignment-list">
-          <li className="list-group-item wd-assignment-list-item border-5">
-            <div className="d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-4" />
-              <MdEditNote className="text-success me-3 fs-2" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/123" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                  A1
-                </Link>
-                <div className="small text-muted">
-                  <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 6 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 13 at 11:59pm | 100 pts
+          {assignments
+            .filter((assignment: any) => assignment.course === cid)
+            .map((assignment: any) => (
+              <li key={assignment._id} className="list-group-item wd-assignment-list-item border-5">
+                <div className="d-flex align-items-center">
+                  <BsGripVertical className="me-2 fs-4" />
+                  <MdEditNote className="text-success me-3 fs-2" />
+                  <div className="flex-grow-1">
+                    <Link 
+                      href={`/Courses/${cid}/Assignments/${assignment._id}`} 
+                      className="wd-assignment-link text-decoration-none text-dark fw-bold"
+                    >
+                      {assignment.title}
+                    </Link>
+                    <div className="small text-muted">
+                      <span className="text-danger">Multiple Modules</span> | 
+                      <strong> Not available until</strong> {assignment.availableFrom} |
+                      <br />
+                      <strong>Due</strong> {assignment.due} | {assignment.points} pts
+                    </div>
+                  </div>
+                  <LessonControlButtons />
                 </div>
-              </div>
-              <LessonControlButtons />
-            </div>
-          </li>
-
-          <li className="list-group-item wd-assignment-list-item  border-5">
-            <div className="d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-4" />
-              <MdEditNote className="text-success me-3 fs-2" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/124" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                  A2
-                </Link>
-                <div className="small text-muted">
-                  <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 13 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 20 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <LessonControlButtons />
-            </div>
-          </li>
-
-          <li className="list-group-item wd-assignment-list-item border-5">
-            <div className="d-flex align-items-center">
-              <BsGripVertical className="me-2 fs-4" />
-              <MdEditNote className="text-success me-3 fs-2" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/125" className="wd-assignment-link text-decoration-none text-dark fw-bold">
-                  A3
-                </Link>
-                <div className="small text-muted">
-                  <span className="text-danger">Multiple Modules</span> | <strong>Not available until</strong> May 20 at 12:00am |
-                  <br />
-                  <strong>Due</strong> May 27 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <LessonControlButtons />
-            </div>
-          </li>
+              </li>
+            ))}
         </ul>
       </div>
     </div>
