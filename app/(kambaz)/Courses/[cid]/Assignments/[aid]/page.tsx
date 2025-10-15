@@ -4,13 +4,38 @@ import Link from "next/link";
 import * as db from "../../../../Database";
 import { FaCalendarAlt } from "react-icons/fa";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description?: string;
+  points: number;
+  dueDate: string;
+  dueTime: string;
+  availableDate: string;
+  availableTime: string;
+  availableUntil?: string;
+  due?: string;
+  availableFrom?: string;
+}
+
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
-  const assignment = db.assignments.find((a: any) => a._id === aid);
+  const assignment = (db.assignments as Assignment[]).find((a) => a._id === aid);
 
   if (!assignment) {
     return <div>Assignment not found</div>;
   }
+
+  const formatDateForDisplay = (dateString: string, timeString: string) => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return `${date.toLocaleDateString('en-US', options)}, ${timeString}`;
+  };
 
   return (
     <div id="wd-assignments-editor" className="container mt-4">
@@ -136,7 +161,8 @@ The Kanbas application should include a link to navigate back to the landing pag
                   type="text" 
                   id="wd-due-date" 
                   className="form-control"
-                  defaultValue={assignment.due} 
+                  defaultValue={assignment.due || (assignment.dueDate && assignment.dueTime ? 
+                    formatDateForDisplay(assignment.dueDate, assignment.dueTime) : "")} 
                 />
                 <span className="input-group-text">
                   <FaCalendarAlt />
@@ -152,7 +178,8 @@ The Kanbas application should include a link to navigate back to the landing pag
                     type="text" 
                     id="wd-available-from" 
                     className="form-control"
-                    defaultValue={assignment.availableFrom} 
+                    defaultValue={assignment.availableFrom || (assignment.availableDate && assignment.availableTime ? 
+                      formatDateForDisplay(assignment.availableDate, assignment.availableTime) : "")} 
                   />
                   <span className="input-group-text">
                     <FaCalendarAlt />

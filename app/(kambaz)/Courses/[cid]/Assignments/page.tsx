@@ -6,10 +6,20 @@ import { FaSearch, FaPlus } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { MdEditNote } from "react-icons/md";
 import LessonControlButtons from "../Modules/LessonControlButtons";
+//import { ReactNode } from "react";
+
+interface Assignment {
+  _id: string;
+  course: string;
+  title: string;
+  availableFrom: string;
+  due: string;
+  points: number;
+}
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const assignments: Assignment[]=db.assignments as Assignment[];
 
   return (
     <div id="wd-assignments" className="p-4">
@@ -53,30 +63,34 @@ export default function Assignments() {
 
         <ul className="list-group list-group-flush" id="wd-assignment-list">
           {assignments
-            .filter((assignment: any) => assignment.course === cid)
-            .map((assignment: any) => (
-              <li key={assignment._id} className="list-group-item wd-assignment-list-item border-5">
-                <div className="d-flex align-items-center">
-                  <BsGripVertical className="me-2 fs-4" />
-                  <MdEditNote className="text-success me-3 fs-2" />
-                  <div className="flex-grow-1">
-                    <Link 
-                      href={`/Courses/${cid}/Assignments/${assignment._id}`} 
-                      className="wd-assignment-link text-decoration-none text-dark fw-bold"
-                    >
-                      {assignment.title}
-                    </Link>
-                    <div className="small text-muted">
-                      <span className="text-danger">Multiple Modules</span> | 
-                      <strong> Not available until</strong> {assignment.availableFrom} |
-                      <br />
-                      <strong>Due</strong> {assignment.due} | {assignment.points} pts
+            .filter((assignment: Assignment) => {
+              return assignment.course === cid;
+            })
+            .map((assignment: Assignment) => {
+              return (
+                <li key={assignment._id} className="list-group-item wd-assignment-list-item border-5">
+                  <div className="d-flex align-items-center">
+                    <BsGripVertical className="me-2 fs-4" />
+                    <MdEditNote className="text-success me-3 fs-2" />
+                    <div className="flex-grow-1">
+                      <Link
+                        href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                        className="wd-assignment-link text-decoration-none text-dark fw-bold"
+                      >
+                        {assignment.title}
+                      </Link>
+                      <div className="small text-muted">
+                        <span className="text-danger">Multiple Modules</span> |
+                        <strong> Not available until</strong> {assignment.availableFrom} |
+                        <br />
+                        <strong>Due</strong> {assignment.due} | {assignment.points} pts
+                      </div>
                     </div>
+                    <LessonControlButtons />
                   </div>
-                  <LessonControlButtons />
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>
