@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
-import store from "../(Kambaz)/store";
+import store from "@/app/(Kambaz)/store";
 import TOC from "./TOC";
 import "bootstrap/dist/css/bootstrap.min.css";
 
