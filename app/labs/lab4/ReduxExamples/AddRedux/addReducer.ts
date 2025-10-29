@@ -1,6 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+interface AddState {
+  sum: number;
+}
+
+interface AddPayload {
+  a: number;
+  b: number;
+}
+
+const initialState: AddState = {
   sum: 0,
 };
 
@@ -8,7 +17,7 @@ const addSlice = createSlice({
   name: "add",
   initialState,
   reducers: {
-    add: (state, action) => {
+    add: (state, action: PayloadAction<AddPayload>) => {
       state.sum = action.payload.a + action.payload.b;
     },
   },
