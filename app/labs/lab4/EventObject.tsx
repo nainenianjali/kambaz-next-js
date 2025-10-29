@@ -2,13 +2,36 @@
 
 import { useState } from "react";
 
+// Define a type for the simplified event object we'll store
+interface SimplifiedEvent {
+  target: string;
+  type: string;
+  bubbles: boolean;
+  cancelable: boolean;
+  defaultPrevented: boolean;
+  eventPhase: number;
+  isTrusted: boolean;
+  timeStamp: number;
+  // Add other event properties you want to display
+}
+
 export default function EventObject() {
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState<SimplifiedEvent | null>(null);
   
-  const handleClick = (e: any) => {
-    e.target = e.target.outerHTML;
-    delete e.view;
-    setEvent(e);
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Create a simplified event object for display
+    const simplifiedEvent: SimplifiedEvent = {
+      target: e.target instanceof HTMLElement ? e.target.outerHTML : '',
+      type: e.type,
+      bubbles: e.bubbles,
+      cancelable: e.cancelable,
+      defaultPrevented: e.defaultPrevented,
+      eventPhase: e.eventPhase,
+      isTrusted: e.isTrusted,
+      timeStamp: e.timeStamp,
+    };
+    
+    setEvent(simplifiedEvent);
   };
   
   return (

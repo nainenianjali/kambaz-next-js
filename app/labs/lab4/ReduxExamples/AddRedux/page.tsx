@@ -4,10 +4,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { add } from "./addReducer";
 
+interface RootState {
+  addReducer: {
+    sum: number;
+  };
+}
+
 export default function AddRedux() {
-  const [a, setA] = useState(12);
-  const [b, setB] = useState(23);
-  const { sum } = useSelector((state: any) => state.addReducer);
+  const [a, setA] = useState<number>(12);
+  const [b, setB] = useState<number>(23);
+  const { sum } = useSelector((state: RootState) => state.addReducer);
   const dispatch = useDispatch();
   
   return (

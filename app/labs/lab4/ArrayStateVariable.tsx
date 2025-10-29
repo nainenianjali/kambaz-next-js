@@ -3,9 +3,20 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+interface Todo {
+  id: string;
+  title: string;
+}
+
+interface RootState {
+  todosReducer: {
+    todos: Todo[];
+  };
+}
+
 export default function ArrayStateVariable() {
-  const [array, setArray] = useState([1, 2, 3, 4, 5]);
-  const { todos } = useSelector((state: any) => state.todosReducer);
+  const [array, setArray] = useState<number[]>([1, 2, 3, 4, 5]);
+  const { todos } = useSelector((state: RootState) => state.todosReducer);
   
   const addElement = () => {
     setArray([...array, Math.floor(Math.random() * 100)]);
@@ -36,7 +47,7 @@ export default function ArrayStateVariable() {
       </ul>
       <h3>Todos from Redux</h3>
       <ul className="list-group">
-        {todos.map((todo: any) => (
+        {todos.map((todo: Todo) => (
           <li key={todo.id} className="list-group-item">
             {todo.title}
           </li>

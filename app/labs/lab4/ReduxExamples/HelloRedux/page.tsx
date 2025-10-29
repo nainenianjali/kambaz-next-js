@@ -2,8 +2,14 @@
 
 import { useSelector } from "react-redux";
 
+interface RootState {
+  helloReducer: {
+    message: string;
+  };
+}
+
 export default function HelloRedux() {
-  const { message } = useSelector((state: any) => state.helloReducer);
+  const { message } = useSelector((state: RootState) => state.helloReducer);
   
   return (
     <div id="wd-hello-redux">
