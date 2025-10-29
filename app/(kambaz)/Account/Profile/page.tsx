@@ -5,11 +5,35 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 
+interface User {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  email: string;
+  role: string;
+}
+
+interface RootState {
+  accountReducer: {
+    currentUser: User | null;
+  };
+}
+
 export default function Profile() {
-  const [profile, setProfile] = useState<any>({});
+  const [profile, setProfile] = useState<User>({
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    email: "",
+    role: "USER",
+  });
   const dispatch = useDispatch();
   const router = useRouter();
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   
   // Function to fetch and populate profile data
   const fetchProfile = () => {

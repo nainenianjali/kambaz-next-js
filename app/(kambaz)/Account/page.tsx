@@ -4,9 +4,25 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+interface User {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  email: string;
+  role: string;
+}
+
+interface RootState {
+  accountReducer: {
+    currentUser: User | null;
+  };
+}
+
 export default function AccountPage() {
   // Get current user from Redux store
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
   const router = useRouter();
   
   useEffect(() => {

@@ -5,22 +5,40 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "../reducer";
 
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description: string;
+  points: number;
+  due: string;
+  dueDate: string;
+  availableFrom: string;
+  availableUntil: string;
+}
+
+interface RootState {
+  assignmentsReducer: {
+    assignments: Assignment[];
+  };
+}
+
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
   const router = useRouter();
   const dispatch = useDispatch();
   
   // Get assignments from Redux store
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
   
   // Find existing assignment if editing
-  const existingAssignment = assignments.find((a: any) => a._id === aid);
+  const existingAssignment = assignments.find((a: Assignment) => a._id === aid);
   
   // State for assignment form
-  const [assignment, setAssignment] = useState({
+  const [assignment, setAssignment] = useState<Assignment>({
     _id: "",
     title: "",
-    course: cid,
+    course: cid as string,
     description: "",
     points: 100,
     due: "",

@@ -8,9 +8,27 @@ import { useState } from "react";
 import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
 
+interface Credentials {
+  username: string;
+  password: string;
+}
+
+interface User {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  email: string;
+  role: string;
+}
+
 export default function Signin() {
   // State variable to track user credentials
-  const [credentials, setCredentials] = useState<any>({});
+  const [credentials, setCredentials] = useState<Credentials>({
+    username: "",
+    password: "",
+  });
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -18,7 +36,7 @@ export default function Signin() {
   const signin = () => {
     // Search for user with matching credentials
     const user = db.users.find(
-      (u: any) =>
+      (u: User) =>
         u.username === credentials.username &&
         u.password === credentials.password
     );
