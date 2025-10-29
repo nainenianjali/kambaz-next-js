@@ -1,15 +1,23 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function DateStateVariable() {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  
+  useEffect(() => {
+    setStartDate(new Date());
+  }, []);
   
   const dateObjectToHtmlDateString = (date: Date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? "0" : ""}${
       date.getMonth() + 1
     }-${date.getDate() < 10 ? "0" : ""}${date.getDate()}`;
   };
+  
+  if (!startDate) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <div id="wd-date-state-variables">
