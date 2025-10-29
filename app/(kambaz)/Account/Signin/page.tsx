@@ -1,38 +1,74 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { setCurrentUser } from "../reducer";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import * as db from "../../Database";
+import { FormControl, Button } from "react-bootstrap";
 
 export default function Signin() {
+  // State variable to track user credentials
+  const [credentials, setCredentials] = useState<any>({});
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  // Function to sign in the user
+  const signin = () => {
+    // Search for user with matching credentials
+    const user = db.users.find(
+      (u: any) =>
+        u.username === credentials.username &&
+        u.password === credentials.password
+    );
+    
+    // If no user found, ignore the sign in attempt
+    if (!user) return;
+    
+    // Store user in reducer by dispatching to Account reducer
+    dispatch(setCurrentUser(user));
+    
+    // Navigate to Dashboard after successful sign in
+    router.push("/Dashboard");
+  };
+
   return (
-    <div id="wd-signin-screen" className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h1 className="mb-4">Signin</h1>
+    <div id="wd-signin-screen">
+      <h1>Sign in</h1>
       
-      <input
-        id="wd-username"
+      {/* Username input field */}
+      <FormControl
+        defaultValue={credentials.username}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
+        className="mb-2"
         placeholder="username"
-        className="form-control mb-3"
+        id="wd-username"
       />
       
-      <input
-        id="wd-password"
+      {/* Password input field */}
+      <FormControl
+        defaultValue={credentials.password}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
+        className="mb-2"
         placeholder="password"
         type="password"
-        className="form-control mb-3"
+        id="wd-password"
       />
       
-      <div className="d-grid mb-3">
-        <Link
-          id="wd-signin-btn"
-          href="/Account/Profile"
-          className="btn btn-primary btn-lg"
-        >
-          Signin
-        </Link>
-      </div>
+      {/* Sign in button */}
+      <Button onClick={signin} id="wd-signin-btn" className="w-100">
+        Sign in
+      </Button>
       
-      <Link id="wd-signup-link" href="/Account/Signup" className="text-primary">
-        Signup
+      {/* Link to sign up page */}
+      <Link id="wd-signup-link" href="/Kambaz/Account/Signup">
+        Sign up
       </Link>
     </div>
   );
 }
-
-

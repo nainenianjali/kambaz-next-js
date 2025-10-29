@@ -1,5 +1,6 @@
+"use client"
+
 import { useState } from "react";
-import { FormControl } from "react-bootstrap";
 
 export default function DateStateVariable() {
   const [startDate, setStartDate] = useState(new Date());
@@ -13,14 +14,15 @@ export default function DateStateVariable() {
   return (
     <div id="wd-date-state-variables">
       <h2>Date State Variables</h2>
+      <h3>{JSON.stringify(startDate)}</h3>
       <h3>{dateObjectToHtmlDateString(startDate)}</h3>
-      <h3>{dateObjectToHtmlDateString(startDate)}</h3>
-      <FormControl
+      <input
         type="date"
+        className="form-control"
         value={dateObjectToHtmlDateString(startDate)}
         onChange={(e) => setStartDate(new Date(e.target.value))}
       />
-      <hr/>
+      <hr />
     </div>
   );
 }

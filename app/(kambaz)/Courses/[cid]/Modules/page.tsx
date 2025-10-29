@@ -1,14 +1,19 @@
 "use client";
+
 import { useParams } from "next/navigation";
-import * as db from "../../../Database";
-import ModulesControls from "./ModulesControls";
-import LessonControlButtons from "./LessonControlButtons";
+import { useState } from "react";
 import { BsGripVertical } from "react-icons/bs";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import ModulesControls from "./ModulesControls";
+import ModuleControlButtons from "./ModuleControlButtons";
+import LessonControlButtons from "./LessonControlButtons";
+import { addModule, editModule, updateModule, deleteModule } from "./reducer";
+import { useSelector, useDispatch } from "react-redux";
 
 interface Lesson {
   _id: string;
   name: string;
+  description: string;
+  module: string;
 }
 
 interface Module {
@@ -16,44 +21,88 @@ interface Module {
   name: string;
   course: string;
   lessons?: Lesson[];
+  editing?: boolean;
+}
+
+interface RootState {
+  modulesReducer: {
+    modules: Module[];
+  };
 }
 
 export default function Modules() {
   const { cid } = useParams();
-  const modules = db.modules as Module[];
+  const [moduleName, setModuleName] = useState("");
   
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
+  const dispatch = useDispatch();
+
   return (
-    <div>
-      <ModulesControls />
-      <br /><br /><br /><br />
-      <ListGroup id="wd-modules" className="rounded-0">
+    <div id="wd-modules">
+      <ModulesControls
+        moduleName={moduleName}
+        setModuleName={setModuleName}
+        addModule={() => {
+          if (moduleName.trim()) {
+            dispatch(addModule({ name: moduleName, course: cid as string }));
+            setModuleName("");
+          }
+        }}
+      />
+
+      <ul id="wd-modules-list" className="list-group rounded-0">
         {modules
           .filter((module) => module.course === cid)
           .map((module) => (
-            <ListGroupItem key={module._id} className="wd-module p-0 mb-5 border-gray">
-              <div className="wd-title d-flex align-items-center p-3 ps-2 bg-secondary">
+            <li 
+              key={module._id} 
+              className="wd-module list-group-item p-0 mb-5 fs-5 border-gray"
+            >
+              <div className="wd-title p-3 ps-2 bg-secondary d-flex align-items-center">
                 <BsGripVertical className="me-2 fs-3" />
-                <span>{module.name}</span>
-                <div className="ms-auto d-flex align-items-center">
-                  <LessonControlButtons />
-                </div>
+                
+                {!module.editing && <span className="flex-grow-1">{module.name}</span>}
+                
+                {module.editing && (
+                  <input
+                    className="form-control w-50 d-inline-block"
+                    onChange={(e) =>
+                      dispatch(updateModule({ ...module, name: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        dispatch(updateModule({ ...module, editing: false }));
+                      }
+                    }}
+                    defaultValue={module.name}
+                    autoFocus
+                  />
+                )}
+                
+                <ModuleControlButtons
+                  moduleId={module._id}
+                  deleteModule={(moduleId) => dispatch(deleteModule(moduleId))}
+                  editModule={(moduleId) => dispatch(editModule(moduleId))}
+                />
               </div>
-              {module.lessons && (
-                <ListGroup className="wd-lessons rounded-0">
+              
+              {module.lessons && module.lessons.length > 0 && (
+                <ul className="wd-lessons list-group rounded-0">
                   {module.lessons.map((lesson) => (
-                    <ListGroupItem key={lesson._id} className="wd-lesson p-3 ps-4 d-flex align-items-center">
-                      <BsGripVertical className="me-2 fs-5" />
-                      <span className="wd-title">{lesson.name}</span>
-                      <div className="ms-auto d-flex align-items-center">
-                        <LessonControlButtons />
-                      </div>
-                    </ListGroupItem>
+                    <li 
+                      key={lesson._id} 
+                      className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center"
+                    >
+                      <BsGripVertical className="me-2 fs-3" />
+                      <span className="flex-grow-1">{lesson.name}</span>
+                      <LessonControlButtons />
+                    </li>
                   ))}
-                </ListGroup>
+                </ul>
               )}
-            </ListGroupItem>
+            </li>
           ))}
-      </ListGroup>
+      </ul>
     </div>
   );
 }

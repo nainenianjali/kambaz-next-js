@@ -3,28 +3,27 @@ export default function Labs() {
  return (
    <div id="wd-labs">
      <h1>Labs</h1>
-    
-      <h4>Anjali Naineni</h4>
-    <h4>CS5610 19730 Web Development SEC 05</h4>
-    
-    
+     <h2> Anjali Naineni</h2>
+     <h2>CS5610 19730 Web Development SEC 05</h2>
      
      <ul>
        <li>
-         <Link href="/labs/lab1" id="wd-lab1-link">
+         <Link href="/Labs/Lab1" id="wd-lab1-link">
            Lab 1: HTML Examples </Link>
        </li>
        <li>
-         <Link href="/labs/lab2" id="wd-lab2-link">
+         <Link href="/Labs/Lab2" id="wd-lab2-link">
            Lab 2: CSS Basics </Link>
        </li>
        <li>
-         <Link href="/labs/lab3" id="wd-lab3-link">
+         <Link href="/Labs/Lab3" id="wd-lab3-link">
            Lab 3: JavaScript Fundamentals </Link>
        </li>
-       <Link href="/" id="wd-kambaz-link">
-    Kambaz
-  </Link>
+       <li>
+          <Link href="/Labs/Lab4" id="wd-lab4-link">
+            Lab 4: User Events </Link>
+        </li>
      </ul>
    </div>
 );}
+

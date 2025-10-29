@@ -2,9 +2,10 @@ import { FaCalendar, FaEnvelopeOpenText, FaRegClock } from "react-icons/fa";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaBookBible } from "react-icons/fa6";
 import { VscAccount } from "react-icons/vsc";
+
 export default function ReactIconsSampler() {
   return (
-    <div id="wd-react-icons-sampler" className="mb-4">
+    <div id="wd-react-icons-sampler">
       <h3>React Icons Sampler</h3>
       <div className="d-flex">
         <VscAccount className="fs-3 text" />
@@ -15,5 +16,5 @@ export default function ReactIconsSampler() {
         <FaRegClock className="fs-3 text" />
       </div>
     </div>
-);}
-
+  );
+}

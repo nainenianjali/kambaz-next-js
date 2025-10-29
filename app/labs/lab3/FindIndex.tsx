@@ -1,15 +1,17 @@
-import React from 'react'
-
-export default function FilterFunction() {
+export default function FindIndex() {
   const numberArray1 = [1, 2, 4, 5, 6];
-  const numbersGreaterThan2 = numberArray1.filter((a) => a > 2);
-  const evenNumbers = numberArray1.filter((a) => a % 2 === 0);
-  const oddNumbers = numberArray1.filter((a) => a % 2 !== 0);
+  const stringArray1 = ["string1", "string3"];
+  
+  const fourIndex = numberArray1.findIndex((a) => a === 4);
+  const string3Index = stringArray1.findIndex((a) => a === "string3");
+  
   return (
-    <div id="wd-filter-function">
-      <h4>Filter Function</h4>
-      numbersGreaterThan2 = {numbersGreaterThan2}  <br />
-      evenNumbers = {evenNumbers}    <br />
-      oddNumbers = {oddNumbers}      <hr />
+    <div id="wd-find-index">
+      <h4>FindIndex function</h4>
+      <div>
+        fourIndex = {fourIndex}<br />
+        string3Index = {string3Index}
+      </div>
     </div>
-);}
+  );
+}

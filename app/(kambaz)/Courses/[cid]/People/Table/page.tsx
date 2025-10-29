@@ -24,7 +24,7 @@ interface Enrollment {
 
 export default function PeopleTable() {
   const { cid } = useParams();
-  const users = db.users as User[];
+  const users = db.users as unknown as User[];
   const enrollments = db.enrollments as Enrollment[];
   
   return (

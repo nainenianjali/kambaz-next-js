@@ -1,15 +1,15 @@
-/* eslint-disable react/jsx-key */
-import ListGroup from "react-bootstrap/esm/ListGroup";
 import TodoItem from "./TodoItem";
 import todos from "./todos.json";
-export default function TodoList() {
- return(
-   <>
-     <h3>Todo List</h3>
-     <ListGroup>
-       { todos.map(todo => {
-           return(<TodoItem todo={todo}/>);   })}
-     </ListGroup><hr/>
-   </>
-);}
 
+export default function TodoList() {
+  return (
+    <div id="wd-todo-list">
+      <h3>Todo List</h3>
+      <ul className="list-group">
+        {todos.map((todo) => (
+          <TodoItem key={todo.title} todo={todo} />
+        ))}
+      </ul>
+    </div>
+  );
+}

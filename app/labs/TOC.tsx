@@ -1,40 +1,62 @@
-"use client";
-import { Nav, NavItem, NavLink } from "react-bootstrap";
+"use client"
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 export default function TOC() {
   const pathname = usePathname();
-
- return (
-
-   <Nav variant="pills">
-    <NavItem>
-       <NavLink href="www.google.com" as={Link}  >Labs</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/labs" as={Link}  className={`nav-link ${pathname.endsWith("labs") ? "active" : ""}`}>Labs</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/labs/lab1" as={Link}  className={`nav-link ${pathname.endsWith("lab1") ? "active" : ""}`}>Lab 1</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/labs/lab2" as={Link} className={`nav-link ${pathname.endsWith("lab2") ? "active" : ""}`}>Lab 2</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/labs/lab3" as={Link} className={`nav-link ${pathname.endsWith("lab3") ? "active" : ""}`}>Lab 3</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/labs/lab4" as={Link} className={`nav-link ${pathname.endsWith("lab4") ? "active" : ""}`}>Lab 4</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="/" as={Link}>Kambaz</NavLink>
-     </NavItem>
-     <NavItem>
-       <NavLink href="https://github.com/nainenianjali">My GitHub</NavLink>
-     </NavItem>
-   </Nav>
   
-);}
-
-
-
+  return (
+    <ul className="nav nav-pills">
+      <li className="nav-item">
+        <Link 
+          href="/Labs" 
+          className={`nav-link ${pathname === "/Labs" ? "active" : ""}`}
+        >
+          Labs
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link 
+          href="/Labs/Lab1" 
+          className={`nav-link ${pathname.includes("/Labs/Lab1") ? "active" : ""}`}
+        >
+          Lab 1
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link 
+          href="/Labs/Lab2" 
+          className={`nav-link ${pathname.includes("/Labs/Lab2") ? "active" : ""}`}
+        >
+          Lab 2
+        </Link>
+      </li>
+      <li className="nav-item">
+        <Link 
+          href="/Labs/Lab3" 
+          className={`nav-link ${pathname.includes("/Labs/Lab3") ? "active" : ""}`}
+        >
+          Lab 3
+        </Link>
+      </li>
+      <li>
+  <Link 
+    href="/Labs/Lab4" 
+    className={`nav-link ${pathname.includes("/Labs/Lab4") ? "active" : ""}`}>
+    Lab 4
+  </Link>
+</li>
+      <li className="nav-item">
+        <Link href="/" className="nav-link">
+          Kambaz
+        </Link>
+      </li>
+      <li className="nav-item">
+        <a href="https://github.com/nainenianjali" className="nav-link" target="_blank" rel="noopener noreferrer">
+          My GitHub
+        </a>
+      </li>
+    </ul>
+  );
+}

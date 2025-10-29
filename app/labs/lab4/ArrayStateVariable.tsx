@@ -1,9 +1,11 @@
+"use client"
+
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function ArrayStateVariable() {
-  const todos = useSelector((state: any) => state.todosReducer?.todos || []);
   const [array, setArray] = useState([1, 2, 3, 4, 5]);
+  const { todos } = useSelector((state: any) => state.todosReducer);
   
   const addElement = () => {
     setArray([...array, Math.floor(Math.random() * 100)]);
@@ -16,28 +18,30 @@ export default function ArrayStateVariable() {
   return (
     <div id="wd-array-state-variables">
       <h2>Array State Variable</h2>
-      <button onClick={addElement}>Add Element</button>
-      <ul>
+      <button onClick={addElement} className="btn btn-success mb-3">
+        Add Element
+      </button>
+      <ul className="list-group">
         {array.map((item, index) => (
-          <li key={index}> 
+          <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
             {item}
-            <button onClick={() => deleteElement(index)}>
+            <button 
+              onClick={() => deleteElement(index)}
+              className="btn btn-danger btn-sm"
+            >
               Delete
             </button>
           </li>
         ))}
       </ul>
-      
-      <hr />
-      
-      <ul>
+      <h3>Todos from Redux</h3>
+      <ul className="list-group">
         {todos.map((todo: any) => (
-          <li key={todo.id}>
+          <li key={todo.id} className="list-group-item">
             {todo.title}
           </li>
         ))}
       </ul>
-      
       <hr />
     </div>
   );

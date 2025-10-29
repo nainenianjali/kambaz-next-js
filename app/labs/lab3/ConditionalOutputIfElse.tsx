@@ -1,14 +1,17 @@
-import React from 'react'
-
 export default function ConditionalOutputIfElse() {
- const loggedIn = true;
- if (loggedIn) {
-   return <h2 id="wd-conditional-output-if-else-welcome">Welcome If Else</h2>;
- } else {
-   return (
-     <h2 id="wd-conditional-output-if-else-login">Please login If Else</h2>
-   );
-}}
-
-
-
+  const loggedIn = true;
+  
+  if (loggedIn) {
+    return (
+      <div id="wd-conditional-output-if-else-welcome">
+        <h2>Welcome If Else</h2>
+      </div>
+    );
+  } else {
+    return (
+      <div id="wd-conditional-output-if-else-login">
+        <h2>Please login If Else</h2>
+      </div>
+    );
+  }
+}
