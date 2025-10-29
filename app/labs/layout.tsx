@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { Provider } from "react-redux";
 // import store from "../Labs/Lab4/store/index";
 import TOC from "./TOC";
-import store from "./Lab4/store";
+import store from "./store/index";
 
 export default function LabsLayout({
   children,

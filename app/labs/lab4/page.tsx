@@ -1,7 +1,7 @@
 "use client"
 
 import { Provider } from "react-redux";
-import store from "./store";
+import store from "../store";
 import ClickEvent from "./ClickEvent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
