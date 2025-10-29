@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
+import { addNewCourse, deleteCourse, updateCourse } from "../Courses/[cid]/reducer";
 import { enrollUser, unenrollUser } from "../Enrollments/reducer";
 
 export default function Dashboard() {

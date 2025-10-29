@@ -4,19 +4,33 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { FormControl, ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import ModulesControls from "./ModulesControls";
-import ModuleControlButtons from "./ModuleControlButtons";
+import ModulesControls from "./Modules/ModulesControls";
+import ModuleControlButtons from "./Modules/ModuleControlButtons";
 // Import reducer functions to add, delete, and update modules
 import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 // Import useSelector and useDispatch
 import { useSelector, useDispatch } from "react-redux";
 
+// Define types
+interface Module {
+  _id: string;
+  name: string;
+  course: string;
+  editing?: boolean;
+}
+
+interface RootState {
+  modulesReducer: {
+    modules: Module[];
+  };
+}
+
 export default function Modules() {
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid: string }>();
   const [moduleName, setModuleName] = useState("");
   
-  // Retrieve modules state variables
-  const { modules } = useSelector((state: any) => state.modulesReducer);
+  // Retrieve modules state variables with proper typing
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
   
   // Get dispatch to call reducer functions
   const dispatch = useDispatch();
@@ -35,8 +49,8 @@ export default function Modules() {
 
       <ListGroup id="wd-modules" className="rounded-0">
         {modules
-          .filter((module: any) => module.course === cid)
-          .map((module: any) => (
+          .filter((module: Module) => module.course === cid)
+          .map((module: Module) => (
             <ListGroup.Item key={module._id} className="p-0 mb-5 fs-5 border-gray">
               <div className="wd-title p-3 ps-2 bg-secondary">
                 <BsGripVertical className="me-2 fs-3" />
