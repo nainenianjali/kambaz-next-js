@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Define the state type
 interface AddState {
   sum: number;
 }
 
+// Define the payload type for the add action
 interface AddPayload {
   a: number;
   b: number;
