@@ -7,7 +7,7 @@ import { BsGripVertical } from "react-icons/bs";
 import ModulesControls from "./Modules/ModulesControls";
 import ModuleControlButtons from "./Modules/ModuleControlButtons";
 // Import reducer functions to add, delete, and update modules
-import { addModule, editModule, updateModule, deleteModule } from "./reducer";
+import { addModule, editModule, updateModule, deleteModule } from "./Modules/reducer";
 // Import useSelector and useDispatch
 import { useSelector, useDispatch } from "react-redux";
 
