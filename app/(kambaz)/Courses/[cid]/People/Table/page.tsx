@@ -27,8 +27,13 @@ export default function PeopleTable() {
   const users = db.users as unknown as User[];
   const enrollments = db.enrollments as Enrollment[];
   
+
+  console.log("Users:", users);
+  console.log("Enrollments:", enrollments);
+    console.log("CID:", cid);
   return (
     <div id="wd-people-table">
+      console.log()
       <Table striped>
         <thead>
           <tr>
