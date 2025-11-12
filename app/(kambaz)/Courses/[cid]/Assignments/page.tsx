@@ -1,148 +1,157 @@
-"use client"
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { BsGripVertical, BsPlus } from "react-icons/bs";
+import { BsGripVertical } from "react-icons/bs";
+import { MdOutlineAssignment } from "react-icons/md";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaCheckCircle, FaTrash } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
-
-interface Assignment {
-  _id: string;
-  title: string;
-  course: string;
-  description: string;
-  points: number;
-  due: string;
-  dueDate: string;
-  availableFrom: string;
-  availableUntil: string;
-}
-
-interface User {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  email: string;
-  role: string;
-}
-
-interface RootState {
-  assignmentsReducer: {
-    assignments: Assignment[];
-  };
-  accountReducer: {
-    currentUser: User | null;
-  };
-}
+import { deleteAssignment, setAssignments } from "./reducer";
+import { Modal, Button } from "react-bootstrap";
+import * as client from "./client";
 
 export default function Assignments() {
-  const { cid } = useParams<{ cid: string }>();
-  const router = useRouter();
+  const { cid } = useParams();
   const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   
-  // Get assignments from Redux store
-  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
-  
-  // Get current user to check role
-  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  
-  // Filter assignments for this course
-  const courseAssignments = assignments.filter((assignment: Assignment) => assignment.course === cid);
-  
-  // Handle delete with confirmation
-  const handleDelete = (assignmentId: string, assignmentTitle: string) => {
-    if (window.confirm(`Are you sure you want to remove "${assignmentTitle}"?`)) {
-      dispatch(deleteAssignment(assignmentId));
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+
+  const fetchAssignments = async () => {
+    if (!cid || Array.isArray(cid)) return;
+    const assignments = await client.findAssignmentsForCourse(cid);
+    dispatch(setAssignments(assignments));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
+  const handleDeleteClick = (assignment: any) => {
+    setAssignmentToDelete(assignment);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (assignmentToDelete) {
+      await client.deleteAssignment(assignmentToDelete._id);
+      dispatch(deleteAssignment(assignmentToDelete._id));  // ← Changed from deleteAssignmentAction
+      setShowDeleteModal(false);
+      setAssignmentToDelete(null);
     }
   };
-  
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setAssignmentToDelete(null);
+  };
+
   return (
-    <div id="wd-assignments">
-      {/* Header with Search and Buttons */}
+    <div id="wd-assignments" className="p-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <input
-          id="wd-search-assignment"
-          type="text"
-          className="form-control"
-          placeholder="Search for Assignments"
-          style={{ width: "300px" }}
-        />
+        <div className="input-group" style={{ width: "300px" }}>
+          <span className="input-group-text bg-white border-end-0">
+            <CiSearch className="fs-5" />
+          </span>
+          <input
+            type="text"
+            className="form-control border-start-0"
+            placeholder="Search for Assignments"
+            id="wd-search-input"
+          />
+        </div>
         <div>
-          <button id="wd-add-assignment-group" className="btn btn-secondary me-2">
-            <BsPlus className="fs-4" /> Group
+          <button className="btn btn-secondary me-2" id="wd-group-add">
+            <FaPlus className="me-1" /> Group
           </button>
-          {/* Only show Add Assignment button for faculty */}
-          {currentUser?.role === "FACULTY" && (
-            <button
-              id="wd-add-assignment"
-              className="btn btn-danger"
-              onClick={() => router.push(`/Courses/${cid}/Assignments/new`)}
-            >
-              <BsPlus className="fs-4" /> Assignment
+          <Link href={`/Courses/${cid}/Assignments/new`}>
+            <button className="btn btn-danger" id="wd-assignment-add">
+              <FaPlus className="me-1" /> Assignment
             </button>
-          )}
+          </Link>
         </div>
       </div>
 
-      {/* Assignments List */}
-      <ul id="wd-assignment-list" className="list-group rounded-0">
-        {/* Header */}
-        <li className="wd-assignment-list-item list-group-item p-3 ps-1 bg-secondary">
+      <div className="border rounded">
+        <div className="bg-light p-3 d-flex align-items-center justify-content-between border-bottom">
           <div className="d-flex align-items-center">
-            <BsGripVertical className="me-2 fs-3" />
-            <span className="fw-bold">ASSIGNMENTS</span>
-            <span className="ms-auto">
-              <span className="me-3">40% of Total</span>
-              <BsPlus className="fs-4" />
-              <IoEllipsisVertical className="fs-5" />
-            </span>
+            <BsGripVertical className="fs-5 me-2 text-muted" />
+            <span className="fw-bold">▼ ASSIGNMENTS</span>
           </div>
-        </li>
+          <div className="d-flex align-items-center">
+            <span className="border rounded-pill px-2 py-1 me-3" style={{ fontSize: "0.85rem" }}>
+              40% of Total
+            </span>
+            <FaPlus className="me-3" />
+            <IoEllipsisVertical />
+          </div>
+        </div>
 
-        {/* Dynamic Assignments */}
-        {courseAssignments.map((assignment: Assignment) => (
-          <li key={assignment._id} className="wd-assignment-list-item list-group-item p-3 ps-1 border-start border-success border-3">
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="me-2 fs-3" />
-              <div className="flex-grow-1">
-                <Link
-                  href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                  className="wd-assignment-link text-dark text-decoration-none fw-bold"
-                >
-                  {assignment.title}
-                </Link>
-                <div className="mt-1">
-                  <span className="text-danger">Multiple Modules</span>
-                  <span className="mx-1">|</span>
-                  <span className="fw-bold">Not available until</span> {assignment.availableFrom}
-                  <span className="mx-1">|</span>
-                  <div className="mt-1">
-                    <span className="fw-bold">Due</span> {assignment.due}
-                    <span className="mx-1">|</span>
+        <ul className="list-group list-group-flush" id="wd-assignment-list">
+          {assignments.map((assignment: any) => (
+            <li
+              key={assignment._id}
+              className="list-group-item py-3 wd-assignment-list-item"
+              style={{ borderLeft: "4px solid #28a745" }}
+            >
+              <div className="d-flex align-items-start">
+                <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
+                <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
+                <div className="flex-grow-1">
+                  <Link
+                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                    className="fw-bold text-dark text-decoration-none wd-assignment-link"
+                  >
+                    {assignment.title}
+                  </Link>
+                  <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
+                    <span className="text-danger">Multiple Modules</span> |{" "}
+                    <span className="fw-normal">Not available until</span>{" "}
+                    {assignment.availableFromDate} |
+                    <br />
+                    <span className="fw-normal">Due</span> {assignment.dueDate} |{" "}
                     {assignment.points} pts
                   </div>
                 </div>
+                <div className="d-flex align-items-start">
+                  <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
+                  <button
+                    onClick={() => handleDeleteClick(assignment)}
+                    className="btn btn-link text-danger p-0 me-2"
+                    title="Delete Assignment"
+                  >
+                    <FaTrash />
+                  </button>
+                  <IoEllipsisVertical className="fs-5 mt-1" />
+                </div>
               </div>
-              <div className="ms-auto d-flex align-items-center">
-                {/* Only show delete button for faculty */}
-                {currentUser?.role === "FACULTY" && (
-                  <FaTrash
-                    className="text-danger me-3"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDelete(assignment._id, assignment.title)}
-                  />
-                )}
-                <FaCheckCircle className="text-success fs-5 me-2" />
-                <IoEllipsisVertical className="fs-5" />
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={cancelDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Assignment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove the assignment &quot;{assignmentToDelete?.title}&quot;?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Yes, Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

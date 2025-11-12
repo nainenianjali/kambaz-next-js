@@ -1,92 +1,82 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import Link from "next/link";
+import * as client from "../client";
 import { useRouter } from "next/navigation";
 import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import * as db from "../../Database";
-import { FormControl, Button } from "react-bootstrap";
-
-interface Credentials {
-  username: string;
-  password: string;
-}
-
-interface User {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  email: string;
-  role: string;
-}
+import { Form, FormControl, Button, Alert } from "react-bootstrap";
 
 export default function Signin() {
-  // State variable to track user credentials
-  const [credentials, setCredentials] = useState<Credentials>({
-    username: "",
-    password: "",
-  });
+  const [credentials, setCredentials] = useState<any>({ username: "", password: "" });
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
-
-  // Function to sign in the user
-  const signin = () => {
-    // Search for user with matching credentials
-    const user = db.users.find(
-      (u: User) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-    
-    // If no user found, ignore the sign in attempt
-    if (!user) return;
-    
-    // Store user in reducer by dispatching to Account reducer
-    dispatch(setCurrentUser(user));
-    
-    // Navigate to Dashboard after successful sign in
-    router.push("/Dashboard");
+  
+  const signin = async () => {
+    try {
+      setError(""); // Clear any previous errors
+      const user = await client.signin(credentials);
+      if (!user) {
+        setError("User does not exist. Please check your credentials or sign up.");
+        return;
+      }
+      dispatch(setCurrentUser(user));
+      router.push("/Dashboard");
+    } catch (err: any) {
+      // Handle error from server
+      if (err.response && err.response.status === 401) {
+        setError("User does not exist. Please check your credentials or sign up.");
+      } else if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+    }
   };
 
   return (
-    <div id="wd-signin-screen">
-      <h1>Sign in</h1>
+    <div id="wd-signin-screen" className="p-4" style={{ maxWidth: "400px" }}>
+      <h3>Sign in</h3>
       
-      {/* Username input field */}
-      <FormControl
-        defaultValue={credentials.username}
-        onChange={(e) =>
-          setCredentials({ ...credentials, username: e.target.value })
-        }
-        className="mb-2"
-        placeholder="username"
-        id="wd-username"
-      />
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="danger" dismissible onClose={() => setError("")}>
+          {error}
+        </Alert>
+      )}
       
-      {/* Password input field */}
-      <FormControl
-        defaultValue={credentials.password}
-        onChange={(e) =>
-          setCredentials({ ...credentials, password: e.target.value })
-        }
-        className="mb-2"
-        placeholder="password"
-        type="password"
-        id="wd-password"
-      />
-      
-      {/* Sign in button */}
-      <Button onClick={signin} id="wd-signin-btn" className="w-100">
-        Sign in
-      </Button>
-      
-      {/* Link to sign up page */}
-      <Link id="wd-signup-link" href="/Kambaz/Account/Signup">
-        Sign up
-      </Link>
+      <Form>
+        <FormControl
+          value={credentials.username}
+          onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+          placeholder="username"
+          className="wd-username mb-2"
+          id="wd-username"
+          autoComplete="off"
+        />
+        <FormControl
+          value={credentials.password}
+          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+          placeholder="password"
+          type="password"
+          className="wd-password mb-2"
+          id="wd-password"
+          autoComplete="new-password"
+        />
+        <Button 
+          onClick={signin} 
+          variant="primary" 
+          className="w-100 mb-2"
+          id="wd-signin-btn"
+        >
+          Sign in
+        </Button>
+        <Link href="/Account/Signup" id="wd-signup-link">
+          Sign up
+        </Link>
+      </Form>
     </div>
   );
 }

@@ -1,44 +1,32 @@
-"use client"
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
-interface User {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-  email: string;
-  role: string;
-}
-
-interface RootState {
-  accountReducer: {
-    currentUser: User | null;
-  };
-}
-
 export default function AccountNavigation() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const pathname = usePathname();
   
-  // Get current user from Redux store
-  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
-  
-  // Show Profile if user is signed in, otherwise show Signin and Signup
   const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
-  
+
   return (
-    <div id="wd-account-navigation" className="list-group">
+    <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
       {links.map((link) => (
-        <Link
-          key={link}
-          href={`/Account/${link}`}
-          className={`list-group-item ${pathname === `/Account/${link}` ? "active text-danger" : "text-danger"}`}
-        >
-          {link}
-        </Link>
+        <div key={link}>
+          <Link
+            href={`/Account/${link}`}
+            id={`wd-account-${link.toLowerCase()}-link`}
+            className={`list-group-item border-0 ${
+              pathname.includes(link)
+                ? "text-black border-start border-dark border-3"
+                : "text-danger"
+            }`}
+          >
+            {link}
+          </Link>
+          <br />
+        </div>
       ))}
     </div>
   );
