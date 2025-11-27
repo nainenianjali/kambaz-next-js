@@ -12,10 +12,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { setModules, addModule, editModule, updateModule, deleteModule } from "./reducer";
 
 export default function Modules() {
-  const { cid } = useParams();
+  const params = useParams();
+  const cid = params.cid as string; // Type assertion
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const dispatch = useDispatch();
+  
+  // Check if user can edit (only FACULTY and ADMIN)
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
   
   const onCreateModuleForCourse = async () => {
     if (!cid || Array.isArray(cid)) return;
@@ -25,17 +30,20 @@ export default function Modules() {
   };
 
   const onRemoveModule = async (moduleId: string) => {
-    await client.deleteModule(moduleId);
+    if (!cid) return;
+    await client.deleteModule(cid, moduleId);
     dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
   };
 
   const onUpdateModule = async (moduleData: any) => {
-    await client.updateModule(moduleData);
+    if (!cid) return;
+    await client.updateModule(cid, moduleData);
     dispatch(setModules(modules.map((m: any) => (m._id === moduleData._id ? moduleData : m))));
   };
 
   const fetchModules = async () => {
-    const fetchedModules = await client.findModulesForCourse(cid as string);
+    if (!cid) return;
+    const fetchedModules = await client.findModulesForCourse(cid);
     dispatch(setModules(fetchedModules));
   };
   
@@ -57,9 +65,11 @@ export default function Modules() {
             <div className="wd-title p-3 ps-2 bg-secondary">
               <BsGripVertical className="me-2 fs-3" />
               
-              {!module.editing && module.name}
+              {/* Show module name - only editable for faculty/admin */}
+              {(!module.editing || !canEdit) && module.name}
               
-              {module.editing && (
+              {/* Only show edit field for faculty/admin */}
+              {module.editing && canEdit && (
                 <FormControl 
                   className="w-50 d-inline-block"
                   value={module.name}

@@ -60,9 +60,20 @@ export const findAllUsers = async () => {
   return response.data;
 };
 
-export const findUsersByRole = async (role: string) => {
-  const response = await axiosWithCredentials.get(`${USERS_API}?role=${role}`);
+//export const findUsersByRole = async (role: string) => {
+  //const response = await axiosWithCredentials.get(`${USERS_API}?role=${role}`);
+  //return response.data;
+//};
+
+
+export const findUsersByRole= async (role: string) => {
+  const response = await axios.get(`${USERS_API}?role=${role}`);
   return response.data;
+};
+
+export const findUsersByPartialName = async (name: string) => {
+    const response = await axios.get(`${USERS_API}?name=${name}`);
+    return response.data;
 };
 
 export const findUserById = async (id: string) => {
@@ -79,3 +90,7 @@ export const deleteUser = async (userId: string) => {
   const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
   return response.data;
 };
+
+//export function findUsersByPartialName(name: string) {
+  //  throw new Error("Function not implemented.");
+//}

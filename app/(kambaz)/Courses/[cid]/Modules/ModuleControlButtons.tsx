@@ -1,19 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
+import { useSelector } from "react-redux";
 
-export default function ModuleControlButtons({ moduleId, deleteModule, editModule }: { moduleId: string; deleteModule: (moduleId: string) => void; editModule: (moduleId: string) => void  }
-) {
+export default function ModuleControlButtons({ 
+  moduleId, 
+  deleteModule, 
+  editModule 
+}: { 
+  moduleId: string; 
+  deleteModule: (moduleId: string) => void; 
+  editModule: (moduleId: string) => void;
+}) {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  
+  // Only show edit/delete for FACULTY and ADMIN
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
+
   return (
     <div className="float-end">
-            <FaPencil onClick={() => editModule(moduleId)} className="text-primary me-3" />
-            <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteModule(moduleId)}/>
+      {canEdit && (
+        <>
+          <FaPencil 
+            onClick={() => editModule(moduleId)} 
+            className="text-primary me-3" 
+          />
+          <FaTrash 
+            className="text-danger me-2 mb-1" 
+            onClick={() => deleteModule(moduleId)}
+          />
+        </>
+      )}
       <GreenCheckmark />
-      <BsPlus className="fs-4 mx-2" />
+      {canEdit && <BsPlus className="fs-4 mx-2" />}
       <IoEllipsisVertical className="fs-4" />
     </div>
   );
 }
-

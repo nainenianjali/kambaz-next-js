@@ -12,6 +12,10 @@ export default function AssignmentEditor() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  
+  // Only FACULTY and ADMIN can edit
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
   
   const [assignment, setAssignment] = useState({
     title: "",
@@ -21,6 +25,13 @@ export default function AssignmentEditor() {
     availableFromDate: "",
     availableUntilDate: "",
   });
+
+  // Redirect students trying to create/edit assignments
+  useEffect(() => {
+    if (!canEdit) {
+      router.push(`/Courses/${cid}/Assignments`);
+    }
+  }, [canEdit, cid, router]);
 
   useEffect(() => {
     if (aid !== "new") {
@@ -42,7 +53,6 @@ export default function AssignmentEditor() {
     if (!cid || Array.isArray(cid)) return;
     
     if (aid === "new") {
-      // Create new assignment - server will generate the _id
       const assignmentWithCourse = {
         ...assignment,
         course: cid,
@@ -50,7 +60,6 @@ export default function AssignmentEditor() {
       const newAssignment = await client.createAssignment(cid, assignmentWithCourse);
       dispatch(setAssignments([...assignments, newAssignment]));
     } else {
-      // Update existing assignment
       if (typeof aid !== 'string') {
         console.error("Invalid assignment ID");
         return;
@@ -71,6 +80,11 @@ export default function AssignmentEditor() {
   const handleCancel = () => {
     router.push(`/Courses/${cid}/Assignments`);
   };
+
+  // Don't render form if user can't edit
+  if (!canEdit) {
+    return null;
+  }
 
   return (
     <div id="wd-assignments-editor" className="p-4">

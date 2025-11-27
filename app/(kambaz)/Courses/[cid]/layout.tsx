@@ -20,9 +20,14 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
     setShowNavigation(!showNavigation);
   };
 
-  // Check if user is enrolled in the course
+  // Check if user is enrolled in the course (skip check for admins)
   useEffect(() => {
     if (currentUser) {
+      // ✅ Allow admins to access any course
+      if (currentUser.role === "ADMIN") {
+        return; // Skip enrollment check for admins
+      }
+      
       const isEnrolled = enrollments.some(
         (enrollment: any) =>
           enrollment.user === currentUser._id && enrollment.course === cid

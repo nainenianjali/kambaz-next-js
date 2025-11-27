@@ -18,9 +18,13 @@ export default function Assignments() {
   const { cid } = useParams();
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+
+  // Only FACULTY and ADMIN can edit
+  const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const fetchAssignments = async () => {
     if (!cid || Array.isArray(cid)) return;
@@ -40,7 +44,7 @@ export default function Assignments() {
   const confirmDelete = async () => {
     if (assignmentToDelete) {
       await client.deleteAssignment(assignmentToDelete._id);
-      dispatch(deleteAssignment(assignmentToDelete._id));  // ← Changed from deleteAssignmentAction
+      dispatch(deleteAssignment(assignmentToDelete._id));
       setShowDeleteModal(false);
       setAssignmentToDelete(null);
     }
@@ -65,16 +69,18 @@ export default function Assignments() {
             id="wd-search-input"
           />
         </div>
-        <div>
-          <button className="btn btn-secondary me-2" id="wd-group-add">
-            <FaPlus className="me-1" /> Group
-          </button>
-          <Link href={`/Courses/${cid}/Assignments/new`}>
-            <button className="btn btn-danger" id="wd-assignment-add">
-              <FaPlus className="me-1" /> Assignment
+        {canEdit && (
+          <div>
+            <button className="btn btn-secondary me-2" id="wd-group-add">
+              <FaPlus className="me-1" /> Group
             </button>
-          </Link>
-        </div>
+            <Link href={`/Courses/${cid}/Assignments/new`}>
+              <button className="btn btn-danger" id="wd-assignment-add">
+                <FaPlus className="me-1" /> Assignment
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="border rounded">
@@ -87,7 +93,7 @@ export default function Assignments() {
             <span className="border rounded-pill px-2 py-1 me-3" style={{ fontSize: "0.85rem" }}>
               40% of Total
             </span>
-            <FaPlus className="me-3" />
+            {canEdit && <FaPlus className="me-3" />}
             <IoEllipsisVertical />
           </div>
         </div>
@@ -120,13 +126,15 @@ export default function Assignments() {
                 </div>
                 <div className="d-flex align-items-start">
                   <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
-                  <button
-                    onClick={() => handleDeleteClick(assignment)}
-                    className="btn btn-link text-danger p-0 me-2"
-                    title="Delete Assignment"
-                  >
-                    <FaTrash />
-                  </button>
+                  {canEdit && (
+                    <button
+                      onClick={() => handleDeleteClick(assignment)}
+                      className="btn btn-link text-danger p-0 me-2"
+                      title="Delete Assignment"
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
                   <IoEllipsisVertical className="fs-5 mt-1" />
                 </div>
               </div>
@@ -136,22 +144,24 @@ export default function Assignments() {
       </div>
 
       {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={cancelDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Assignment</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to remove the assignment &quot;{assignmentToDelete?.title}&quot;?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={cancelDelete}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={confirmDelete}>
-            Yes, Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {canEdit && (
+        <Modal show={showDeleteModal} onHide={cancelDelete}>
+          <Modal.Header closeButton>
+            <Modal.Title>Delete Assignment</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to remove the assignment &quot;{assignmentToDelete?.title}&quot;?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={cancelDelete}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={confirmDelete}>
+              Yes, Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 }
