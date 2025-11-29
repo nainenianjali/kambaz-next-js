@@ -5,7 +5,7 @@ import * as enrollmentsClient from "../Account/enrollmentsClient";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
+import { setCourses } from "../Courses/reducer";
 import { enrollCourse, unenrollCourse, setEnrollments } from "../Account/enrollmentsReducer";
 import {
   Row,
@@ -30,6 +30,9 @@ export default function Dashboard() {
     startDate: "2023-09-10", endDate: "2023-12-15",
     image: "/images/reactjs.jpg", description: "New Description"
   });
+
+  // Check if user is faculty or admin
+  const isFacultyOrAdmin = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const fetchCourses = async () => {
     try {
@@ -118,8 +121,8 @@ export default function Dashboard() {
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       
-      {/* Course Management - Only show when NOT showing all courses */}
-      {!showAllCourses && currentUser?.role === "FACULTY" && (
+      {/* Course Management - ONLY VISIBLE TO FACULTY/ADMIN AND ONLY IN "MY COURSES" VIEW */}
+      {!showAllCourses && isFacultyOrAdmin && (
         <>
           <h5>New Course
             <button className="btn btn-primary float-end"
@@ -161,6 +164,7 @@ export default function Dashboard() {
           {displayedCourses.map((c: any) => (
             <Col key={c._id} className="wd-dashboard-course" style={{ width: "300px" }}>
               <Card>
+                {/* Link wraps only the image and text - NOT the buttons */}
                 <Link href={`/Courses/${c._id}/Home`}
                       className="wd-dashboard-course-link text-decoration-none text-dark" >
                   <CardImg src="images/reactjs.jpg" variant="top" width="100%" height={160} />
@@ -171,61 +175,74 @@ export default function Dashboard() {
                     <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
                       {c.description}
                     </CardText>
-                    
-                    {/* Show different buttons based on view mode */}
-                    {showAllCourses ? (
-                      // Enrollment view - show Enroll/Unenroll buttons
-                      <>
-                        <Button variant="primary"> Go </Button>
-                        {isEnrolled(c._id) ? (
-                          <button
-                            onClick={(event) => {
-                              event.preventDefault();
-                              handleUnenroll(c._id);
-                            }}
-                            className="btn btn-danger float-end"
-                          >
-                            Unenroll
-                          </button>
-                        ) : (
-                          <button
-                            onClick={(event) => {
-                              event.preventDefault();
-                              handleEnroll(c._id);
-                            }}
-                            className="btn btn-success float-end"
-                          >
-                            Enroll
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      // Regular view - show Go and management buttons
-                      <>
-                        <Button variant="primary"> Go </Button>
-                        {currentUser?.role === "FACULTY" && (
-                          <>
-                            <button onClick={(event) => {
-                              event.preventDefault();
-                              onDeleteCourse(c._id);
-                            }} className="btn btn-danger float-end"
-                                id="wd-delete-course-click">
-                              Delete
-                            </button>
-                            <button id="wd-edit-course-click"
-                                    onClick={(event) => {
-                                      event.preventDefault();
-                                      setCourse(c);
-                                    }}
-                                    className="btn btn-warning me-2 float-end" >
-                              Edit
-                            </button>
-                          </>
-                        )}
-                      </>
-                    )}
                   </CardBody>
                 </Link>
+                
+                {/* Buttons are OUTSIDE the Link - prevents click conflicts */}
+                <CardBody className="pt-0">
+                  {/* ENROLLMENT VIEW - Show Enroll/Unenroll for everyone */}
+                  {showAllCourses ? (
+                    <>
+                      <Link href={`/Courses/${c._id}/Home`}>
+                        <Button variant="primary">Go</Button>
+                      </Link>
+                      {isEnrolled(c._id) ? (
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handleUnenroll(c._id);
+                          }}
+                          className="btn btn-danger float-end"
+                        >
+                          Unenroll
+                        </button>
+                      ) : (
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handleEnroll(c._id);
+                          }}
+                          className="btn btn-success float-end"
+                        >
+                          Enroll
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    /* MY COURSES VIEW */
+                    <>
+                      <Link href={`/Courses/${c._id}/Home`}>
+                        <Button variant="primary">Go</Button>
+                      </Link>
+                      
+                      {/* Edit/Delete buttons ONLY for Faculty/Admin - COMPLETELY REMOVED for students */}
+                      {isFacultyOrAdmin && (
+                        <>
+                          <button 
+                            onClick={(event) => {
+                              event.preventDefault();
+                              onDeleteCourse(c._id);
+                            }} 
+                            className="btn btn-danger float-end"
+                            id="wd-delete-course-click"
+                          >
+                            Delete
+                          </button>
+                          <button 
+                            id="wd-edit-course-click"
+                            onClick={(event) => {
+                              event.preventDefault();
+                              setCourse(c);
+                            }}
+                            className="btn btn-warning me-2 float-end"
+                          >
+                            Edit
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </CardBody>
               </Card>
             </Col>
           ))}

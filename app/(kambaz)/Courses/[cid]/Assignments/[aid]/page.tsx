@@ -14,7 +14,7 @@ export default function AssignmentEditor() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
-  // Only FACULTY and ADMIN can edit
+  // Only FACULTY and ADMIN can edit - Students can VIEW
   const canEdit = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
   
   const [assignment, setAssignment] = useState({
@@ -26,12 +26,12 @@ export default function AssignmentEditor() {
     availableUntilDate: "",
   });
 
-  // Redirect students trying to create/edit assignments
+  // Redirect students trying to CREATE new assignments (but allow viewing existing ones)
   useEffect(() => {
-    if (!canEdit) {
+    if (!canEdit && aid === "new") {
       router.push(`/Courses/${cid}/Assignments`);
     }
-  }, [canEdit, cid, router]);
+  }, [canEdit, cid, aid, router]);
 
   useEffect(() => {
     if (aid !== "new") {
@@ -81,13 +81,20 @@ export default function AssignmentEditor() {
     router.push(`/Courses/${cid}/Assignments`);
   };
 
-  // Don't render form if user can't edit
-  if (!canEdit) {
+  // Don't render if trying to create new assignment as student
+  if (!canEdit && aid === "new") {
     return null;
   }
 
   return (
     <div id="wd-assignments-editor" className="p-4">
+      {/* Show READ-ONLY banner for students */}
+      {!canEdit && (
+        <div className="alert alert-info mb-4">
+          <strong>View Only:</strong> You are viewing this assignment in read-only mode.
+        </div>
+      )}
+
       <Form>
         <div className="mb-3">
           <Form.Label htmlFor="wd-name">Assignment Name</Form.Label>
@@ -96,6 +103,7 @@ export default function AssignmentEditor() {
             type="text"
             value={assignment.title}
             onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}
+            disabled={!canEdit}  // Disable for students
           />
         </div>
 
@@ -106,6 +114,7 @@ export default function AssignmentEditor() {
             id="wd-description"
             value={assignment.description}
             onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
+            disabled={!canEdit}  // Disable for students
           />
         </div>
 
@@ -119,6 +128,7 @@ export default function AssignmentEditor() {
               type="number"
               value={assignment.points}
               onChange={(e) => setAssignment({ ...assignment, points: parseInt(e.target.value) })}
+              disabled={!canEdit}  // Disable for students
             />
           </Col>
         </Row>
@@ -128,7 +138,11 @@ export default function AssignmentEditor() {
             Assignment Group
           </Form.Label>
           <Col sm={9}>
-            <Form.Select id="wd-group" defaultValue="ASSIGNMENTS">
+            <Form.Select 
+              id="wd-group" 
+              defaultValue="ASSIGNMENTS"
+              disabled={!canEdit}  // Disable for students
+            >
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="ABC">ABC</option>
               <option value="CWS">CWS</option>
@@ -142,7 +156,11 @@ export default function AssignmentEditor() {
             Display Grade as
           </Form.Label>
           <Col sm={9}>
-            <Form.Select id="wd-display-grade-as" defaultValue="Percentage">
+            <Form.Select 
+              id="wd-display-grade-as" 
+              defaultValue="Percentage"
+              disabled={!canEdit}  // Disable for students
+            >
               <option value="Percentage">Percentage</option>
               <option value="ABC">ABC</option>
               <option value="CWS">CWS</option>
@@ -157,7 +175,12 @@ export default function AssignmentEditor() {
           </Form.Label>
           <Col sm={9}>
             <div className="border rounded p-3">
-              <Form.Select id="wd-submission-type" defaultValue="Online" className="mb-3">
+              <Form.Select 
+                id="wd-submission-type" 
+                defaultValue="Online" 
+                className="mb-3"
+                disabled={!canEdit}  // Disable for students
+              >
                 <option value="Online">Online</option>
                 <option value="ABC">ABC</option>
                 <option value="CWS">CWS</option>
@@ -171,6 +194,7 @@ export default function AssignmentEditor() {
                 id="wd-text-entry"
                 label="Text Entry"
                 className="mb-2"
+                disabled={!canEdit}  // Disable for students
               />
               
               <Form.Check
@@ -178,6 +202,7 @@ export default function AssignmentEditor() {
                 id="wd-website-url"
                 label="Website URL"
                 className="mb-2"
+                disabled={!canEdit}  // Disable for students
               />
               
               <Form.Check
@@ -185,6 +210,7 @@ export default function AssignmentEditor() {
                 id="wd-media-recordings"
                 label="Media Recordings"
                 className="mb-2"
+                disabled={!canEdit}  // Disable for students
               />
               
               <Form.Check
@@ -192,12 +218,14 @@ export default function AssignmentEditor() {
                 id="wd-student-annotation"
                 label="Student Annotation"
                 className="mb-2"
+                disabled={!canEdit}  // Disable for students
               />
               
               <Form.Check
                 type="checkbox"
                 id="wd-file-upload"
                 label="File Uploads"
+                disabled={!canEdit}  // Disable for students
               />
             </div>
           </Col>
@@ -217,6 +245,7 @@ export default function AssignmentEditor() {
                 type="text"
                 defaultValue="Everyone"
                 className="mb-3"
+                disabled={!canEdit}  // Disable for students
               />
 
               <Form.Label htmlFor="wd-due-date" className="fw-bold">
@@ -228,6 +257,7 @@ export default function AssignmentEditor() {
                 value={assignment.dueDate}
                 onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })}
                 className="mb-3"
+                disabled={!canEdit}  // Disable for students
               />
 
               <Row>
@@ -240,6 +270,7 @@ export default function AssignmentEditor() {
                     type="date"
                     value={assignment.availableFromDate}
                     onChange={(e) => setAssignment({ ...assignment, availableFromDate: e.target.value })}
+                    disabled={!canEdit}  // Disable for students
                   />
                 </Col>
 
@@ -252,6 +283,7 @@ export default function AssignmentEditor() {
                     type="date"
                     value={assignment.availableUntilDate}
                     onChange={(e) => setAssignment({ ...assignment, availableUntilDate: e.target.value })}
+                    disabled={!canEdit}  // Disable for students
                   />
                 </Col>
               </Row>
@@ -261,13 +293,22 @@ export default function AssignmentEditor() {
 
         <hr />
 
+        {/* BUTTONS - Only show Save/Cancel for Faculty/Admin, only Close for Students */}
         <div className="d-flex justify-content-end">
-          <Button variant="secondary" className="me-2" onClick={handleCancel} id="wd-cancel-btn">
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleSave} id="wd-save-btn">
-            Save
-          </Button>
+          {canEdit ? (
+            <>
+              <Button variant="secondary" className="me-2" onClick={handleCancel} id="wd-cancel-btn">
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={handleSave} id="wd-save-btn">
+                Save
+              </Button>
+            </>
+          ) : (
+            <Button variant="secondary" onClick={handleCancel} id="wd-close-btn">
+              Close
+            </Button>
+          )}
         </div>
       </Form>
     </div>
